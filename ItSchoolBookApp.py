@@ -35,17 +35,22 @@ def update_book():
         book_read = False
     import csv
     rows = []
-    with open('booksDB.csv', mode='a') as file:
+    with open('booksDB.csv', mode='r') as file:
         #rows = list(csv.DictReader(file))
-        rows = csv.DictReader(file, fieldnames=("BookName", "AuthorName", "SharedWith", "IsRead"))
+        rows = list(csv.DictReader(file, fieldnames=("BookName", "AuthorName", "SharedWith", "IsRead")))
         for row in rows:
-            if row.get("BookName") == book_name:
+            if row["BookName"] == book_name:
                 row["IsRead"] = book_read
-                csv_writer = csv.DictWriter(file, fieldnames=[
-                    "BookName", "AuthorName", "SharedWith", "IsRead"
-                ])
-                csv_writer.writerow(row)
                 break
+        with open('booksDB.csv', mode='w') as file:
+            csv_writer = csv.DictWriter(file, fieldnames=[
+                "BookName", "AuthorName", "SharedWith", "IsRead"
+            ])
+            csv_writer.writerow({"BookName": row.get("BookName"),
+                             "AuthorName": row.get("AuthorName"),
+                             "SharedWith": row.get("SharedWith"),
+                             "IsRead": book_read}
+                            )
         print("Book was updated successfully")
 
 
